@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Email Code Autofill demo</title>
+<style>
+  body{margin:0;height:100vh;display:grid;place-items:center;background:#f4f5f7;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1f1f1f}
+  .card{background:#fff;width:420px;padding:36px 36px 30px;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06),0 8px 30px rgba(0,0,0,.06)}
+  .logo{font-weight:700;font-size:18px;letter-spacing:-.2px;margin-bottom:22px}.logo span{color:#6d28d9}
+  h1{font-size:22px;margin:0 0 8px}p{color:#555;margin:0 0 22px;line-height:1.45}
+  .boxes{display:flex;gap:10px}
+  .boxes input{width:48px;height:56px;text-align:center;font-size:24px;font-weight:600;border:1.5px solid #d6d8dd;border-radius:10px;outline:none;color:#1f1f1f}
+  .boxes input:focus{border-color:#6d28d9;box-shadow:0 0 0 3px rgba(109,40,217,.15)}
+  button{margin-top:26px;width:100%;padding:13px;border:0;border-radius:10px;background:#6d28d9;color:#fff;font:600 15px inherit;font-family:inherit}
+  .ok{margin-top:14px;color:#15803d;font-weight:600;height:20px}
+  #cursor{position:fixed;width:18px;height:18px;left:0;top:0;pointer-events:none;z-index:2147483647;transition:transform .7s cubic-bezier(.4,0,.2,1)}
+</style></head>
+<body>
+<div class="card">
+  <div class="logo">acme<span>.</span></div>
+  <h1>Check your inbox</h1>
+  <p>We sent a 6-digit verification code to <b>you@example.com</b>.</p>
+  <form class="boxes" id="f">
+    <input maxlength="1" inputmode="numeric" autocomplete="one-time-code"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric">
+  </form>
+  <button id="go">Verify email</button>
+  <div class="ok" id="ok"></div>
+</div>
+<svg id="cursor" viewBox="0 0 18 18"><path d="M2 1l13 7.5-6 1.2-3 5.6z" fill="#111" stroke="#fff" stroke-width="1.2"/></svg>
+<script>
+  // Demo only: stands in for the extension background, as if the email had just arrived in Gmail.
+  window.chrome = { runtime: { id: 'demo', lastError: null,
+    sendMessage: (msg, cb) => setTimeout(() => cb({ code: '482913', from: 'Acme' }), 900) } };
+  document.querySelectorAll('.boxes input').forEach((i, n, all) => i.addEventListener('input', () => {
+    if ([...all].every((x) => x.value)) document.getElementById('ok').textContent = 'Email verified';
+  }));
+</script>
+<script src="../content.js"></script>
+</body></html>

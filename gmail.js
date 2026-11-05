@@ -17,10 +17,19 @@
       if (age === null || age > 15) continue;
       sent.add(body);
       const from = msg?.querySelector('.gD')?.getAttribute('name') || '';
-      chrome.runtime.sendMessage({ type: 'seen', subject, body: body.innerText.slice(0, 3000), from, age }).catch?.(() => {});
+      try {
+        chrome.runtime.sendMessage({ type: 'seen', subject, body: body.innerText.slice(0, 3000), from, age }).catch(() => {});
+      } catch {
+        observer.disconnect(); // extension reloaded: this old copy stops
+        return;
+      }
     }
   }
 
-  new MutationObserver(() => { clearTimeout(scan.t); scan.t = setTimeout(scan, 500); })
-    .observe(document.body, { childList: true, subtree: true });
+  const observer = new MutationObserver(() => {
+    if (!chrome.runtime?.id) return observer.disconnect();
+    clearTimeout(scan.t);
+    scan.t = setTimeout(scan, 500);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 })();
